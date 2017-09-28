@@ -2,23 +2,32 @@
 
 namespace Detection\MobileDetect\Varnish;
 
+use Detection\MobileDetect;
+
 class DeviceDetect
 {
-    const JSON_LOCATION = __DIR__ . '/../../../../vendor/mobiledetect/mobiledetectlib/Mobile_Detect.json';
-
-    private function readJson()
+    private function getRules()
     {
-        $contents = file_get_contents(self::JSON_LOCATION);
-        return json_decode($contents);
+        $detect = new \Mobile_Detect();
+        return array(
+            'uaMatch' => array(
+                'phones'   => $detect->getPhoneDevices(),
+                'tablets'  => $detect->getTabletDevices(),
+                'os' => $detect->getOperatingSystems(),
+                'browsers' => $detect->getBrowsers(),
+                'utilities' => $detect->getUtilities(),
+            ),
+            'version' => $detect->getScriptVersion(),
+        );
     }
 
     public function generateVcl()
     {
-        $rules = $this->readJson();
+        $rules = $this->getRules();
 
         $vcl = <<<EOT
 sub devicedetect {
-	#Based on Mobile_Detect $rules->version
+	#Based on Mobile_Detect {$rules['version']}
 
 	#https://github.com/serbanghita/Mobile-Detect
 	unset req.http.X-UA-Device;
@@ -34,15 +43,15 @@ sub devicedetect {
 	} else {
 EOT;
 
-        $phones = $rules->uaMatch->phones;
+        $phones = $rules['uaMatch']['phones'];
         $vcl .= $this->returnVarnishRules($phones, "mobile");
-        $mobileBrowsers = $rules->uaMatch->browsers;
+        $mobileBrowsers = $rules['uaMatch']['browsers'];
         $vcl .= $this->returnVarnishRules($mobileBrowsers, "mobile", false, true);
-        $mobileOS = $rules->uaMatch->os;
+        $mobileOS = $rules['uaMatch']['os'];
         $vcl .= $this->returnVarnishRules($mobileOS, "mobile", false, true);
-        $tablets = $rules->uaMatch->tablets;
+        $tablets = $rules['uaMatch']['tablets'];
         $vcl .= $this->returnVarnishRules($tablets, "tablet", true);
-        $bots = $rules->uaMatch->utilities;
+        $bots = $rules['uaMatch']['utilities'];
         $vcl .= $this->returnVarnishRules($bots, "bot");
 
         $vcl .= <<<EOT
