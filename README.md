@@ -4,7 +4,7 @@ A tool to generate VCL function for Varnish using rules from Mobile_Detect.
 
 Based on [varnish-mobiletranslate](https://github.com/willemk/varnish-mobiletranslate).
 
-Intended to be a drop-in replacement for devicedetect
+Intended to be a drop-in replacement for [devicedetect](https://github.com/varnishcache/varnish-devicedetect).
 
 ## Installation
 
