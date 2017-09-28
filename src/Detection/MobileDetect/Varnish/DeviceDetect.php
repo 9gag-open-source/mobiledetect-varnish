@@ -38,9 +38,9 @@ sub devicedetect {
 	# Handle that a cookie may override the detection alltogether.
 	if (req.http.Cookie ~ "(?i)X-UA-Device-force") {
 		/* ;?? means zero or one ;, non-greedy to match the first. */
-		set req.http.X-UA-Device = regsub(req.http.Cookie, "(?i).*X-UA-Device-force=([^;]+);??.*", "\1");
+		set req.http.X-UA-Device = regsub(req.http.Cookie, "(?i).*X-UA-Device-force=([^;]+);??.*", "\\1");
 		/* Clean up our mess in the cookie header */
-		set req.http.Cookie = regsuball(req.http.Cookie, "(^|; ) *X-UA-Device-force=[^;]+;? *", "\1");
+		set req.http.Cookie = regsuball(req.http.Cookie, "(^|; ) *X-UA-Device-force=[^;]+;? *", "\\1");
 		/* If the cookie header is now empty, or just whitespace, unset it. */
 		if (req.http.Cookie ~ "^ *$") { unset req.http.Cookie; }
 	} else {
