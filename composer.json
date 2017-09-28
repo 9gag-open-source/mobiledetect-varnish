@@ -9,6 +9,7 @@
             "Detection\\MobileDetect\\": "src/Detection/MobileDetect/"
         }
     },
+    "license": "MIT",
     "minimum-stability": "stable",
     "bin": ["bin/print-vcl"]
 }
