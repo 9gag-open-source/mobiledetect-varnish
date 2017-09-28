@@ -2,20 +2,23 @@
 
 namespace Detection\MobileDetect\Varnish;
 
-use Detection\MobileDetect;
-
 class DeviceDetect
 {
     private function getRules()
     {
         $detect = new \Mobile_Detect();
+
+        $utilities = $detect->getUtilities();
         return array(
             'uaMatch' => array(
                 'phones'   => $detect->getPhoneDevices(),
                 'tablets'  => $detect->getTabletDevices(),
                 'os' => $detect->getOperatingSystems(),
                 'browsers' => $detect->getBrowsers(),
-                'utilities' => $detect->getUtilities(),
+                'bots' => array(
+                    'Bots' => $utilities['Bot'],
+                    'MobileBots' => $utilities['MobileBot'],
+                ),
             ),
             'version' => $detect->getScriptVersion(),
         );
@@ -51,7 +54,7 @@ EOT;
         $vcl .= $this->returnVarnishRules($mobileOS, "mobile", false, true);
         $tablets = $rules['uaMatch']['tablets'];
         $vcl .= $this->returnVarnishRules($tablets, "tablet", true);
-        $bots = $rules['uaMatch']['utilities'];
+        $bots = $rules['uaMatch']['bots'];
         $vcl .= $this->returnVarnishRules($bots, "bot");
 
         $vcl .= <<<EOT
