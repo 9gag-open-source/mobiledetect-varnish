@@ -1,0 +1,14 @@
+{
+    "name": "9gag-open-source/mobiledetect-varnish",
+    "description": "Varnish VCL device-detect based on Mobile_Detect",
+    "require": {
+        "mobiledetect/mobiledetectlib": "~2.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "Detection\\MobileDetect\\": "src/Detection/MobileDetect/"
+        }
+    },
+    "minimum-stability": "stable",
+    "bin": ["bin/print-vcl"]
+}
