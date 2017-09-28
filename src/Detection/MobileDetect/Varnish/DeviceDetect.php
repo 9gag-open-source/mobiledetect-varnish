@@ -49,11 +49,11 @@ EOT;
         $phones = $rules['uaMatch']['phones'];
         $vcl .= $this->returnVarnishRules($phones, "mobile");
         $mobileBrowsers = $rules['uaMatch']['browsers'];
-        $vcl .= $this->returnVarnishRules($mobileBrowsers, "mobile", false, true);
+        $vcl .= $this->returnVarnishRules($mobileBrowsers, "mobile", true);
         $mobileOS = $rules['uaMatch']['os'];
-        $vcl .= $this->returnVarnishRules($mobileOS, "mobile", false, true);
+        $vcl .= $this->returnVarnishRules($mobileOS, "mobile", true);
         $tablets = $rules['uaMatch']['tablets'];
-        $vcl .= $this->returnVarnishRules($tablets, "tablet", true);
+        $vcl .= $this->returnVarnishRules($tablets, "tablet");
         $bots = $rules['uaMatch']['bots'];
         $vcl .= $this->returnVarnishRules($bots, "bot");
 
@@ -65,7 +65,7 @@ EOT;
         return $vcl;
     }
 
-    private function returnVarnishRules($rulesArray, $key, $tablet = false, $useElse = false){
+    private function returnVarnishRules($rulesArray, $key, $useElse = false){
         $retString = "\t\t";
         if ($useElse){
             $retString .= "elsif (\n";
@@ -85,13 +85,9 @@ EOT;
             $count++;
         }
 
-        if ($tablet){
-            $retString .= "\t\t\tset req.http.X-UA-Device = \"mobile;$key\";\n";
-        } else {
-            $retString .= "\t\t\tset req.http.X-UA-Device = \"$key\";\n";
-        }
-
+        $retString .= "\t\t\tset req.http.X-UA-Device = \"$key\";\n";
         $retString .= "\t\t}\n\n";
+
         return $retString;
     }
 }

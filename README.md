@@ -18,3 +18,14 @@ composer install 9gag-open-source/mobiledetect-varnish
 $generator = new \Detection\MobileDetect\Varnish\DeviceDetect();
 echo $generator->generateVcl();
 ```
+
+## Using the VCL
+
+Include the generated code in your Varnish VCL. The devicedetect function adds a `X-UA-Device` header to the request.
+
+Device Type|X-UA-Device
+-----------|------------
+Phone |  mobile
+Tablet |  tablet
+Crawler bots |  bot
+Other |  desktop
